@@ -1,138 +1,324 @@
-### 📋 사전 준비: 컨텍스트 설정 프롬프트
+# Volt Date
 
-_가장 먼저 이 프롬프트를 입력하여 AI에게 프로젝트의 핵심 원칙을 주입시켜 주세요._
+A lightweight, zero-dependency date library to replace Day.js, built with Native-First philosophy using browser's Intl API.
 
-```markdown
-당신은 시니어 JavaScript 라이브러리 아키텍트입니다.
-우리는 지금부터 Day.js를 대체할 초경량 날짜 라이브러리인 'volt-date'를 개발할 것입니다.
+## ✨ Features
 
-**[핵심 원칙]**
+- **Lightweight**: Minimal bundle size with no external dependencies
+- **Zero-Dependency**: Uses native JavaScript and Intl API only
+- **Immutable**: All methods return new instances, preserving the original
+- **Timezone Support**: Built-in timezone handling using Intl API
+- **Plugin System**: Extensible architecture for custom functionality
+- **TypeScript**: Fully typed with first-class TypeScript support
+- **Day.js Compatible API**: Familiar API for Day.js users
 
-1. **프로젝트명:** volt-date
-2. **클래스명:** VDate (기존 Volt에서 변경됨)
-3. **철학:** Native-First & Zero-Dependency.
-   - 별도의 로케일 파일이나 타임존 데이터베이스(JSON)를 절대 사용하지 않습니다.
-   - 모든 날짜 포맷팅과 타임존 계산은 브라우저 내장 API인 `Intl` 객체를 활용합니다.
-4. **불변성(Immutable):** 모든 변경 메서드는 원본을 수정하지 않고 새로운 `VDate` 인스턴스를 반환합니다.
-5. **호환성:** Day.js의 API 시그니처를 최대한 따릅니다.
+## 📦 Installation
 
-이 원칙을 기억하고, 이어지는 단계별 구현 요청에 따라 코드를 작성해주세요.
+```bash
+npm install volt-date
+# or
+bun add volt-date
 ```
+
+## 🚀 Quick Start
+
+```typescript
+import { volt } from 'volt-date';
+
+// Create a date
+const date = volt('2024-01-15T12:00:00Z');
+
+// Get/Set values
+console.log(date.year()); // 2024
+console.log(date.month()); // 1
+console.log(date.format('YYYY-MM-DD HH:mm')); // 2024-01-15 12:00
+
+// Manipulation
+const tomorrow = date.add(1, 'day');
+const nextMonth = date.add(1, 'month');
+
+// Chaining
+const result = date
+  .add(1, 'day')
+  .startOf('day')
+  .format('YYYY-MM-DD');
+
+// Timezone support
+const seoul = date.tz('Asia/Seoul');
+console.log(seoul.hour()); // 21 (UTC+9)
+```
+
+## 📚 API Documentation
+
+### Core Methods
+
+#### Constructor
+
+```typescript
+const date = new VDate(date, config);
+const date = volt(date, config);
+
+// date can be:
+// - Date object
+// - ISO string: '2024-01-15T12:00:00Z'
+// - Timestamp: 1234567890000
+// - Array: [2024, 0, 15, 12, 0, 0]
+// - Object: { year: 2024, month: 1, date: 15 }
+
+// config options:
+// { tz?: string, locale?: string }
+```
+
+#### Getting/Setting
+
+```typescript
+// Getters
+date.year()      // Get year
+date.month()     // Get month (1-12)
+date.date()      // Get day of month
+date.day()       // Get day of week (0-6)
+date.hour()      // Get hour
+date.minute()    // Get minute
+date.second()    // Get second
+date.millisecond() // Get millisecond
+
+// Setters (return new VDate instance)
+date.year(2025)
+date.month(3)
+date.hour(14)
+```
+
+#### Formatting
+
+```typescript
+date.format('YYYY-MM-DD');     // 2024-01-15
+date.format('HH:mm:ss');       // 12:00:00
+date.format('dddd, MMMM D');   // Monday, January 15
+
+// Supported tokens:
+// YYYY - Year (4 digit)
+// MM - Month (01-12)
+// DD - Day of month (01-31)
+// dddd - Day name (Monday, Tuesday, ...)
+// HH - Hour (00-23)
+// mm - Minute (00-59)
+// ss - Second (00-59)
+```
+
+#### Manipulation
+
+```typescript
+date.add(1, 'day')      // Add 1 day
+date.subtract(3, 'month') // Subtract 3 months
+date.startOf('month')   // Start of month (00:00:00)
+date.endOf('year')      // End of year (23:59:59.999)
+
+// Supported units: year, month, week, day, hour, minute, second, millisecond
+```
+
+#### Querying
+
+```typescript
+date.isBefore(other)
+date.isAfter(other)
+date.isSame(other, 'day')
+date.isBetween(start, end)
+date.isLeapYear()
+```
+
+#### Utilities
+
+```typescript
+date.clone()          // Clone the date
+date.unix()           // Get Unix timestamp
+date.toDate()         // Get native Date object
+date.toObject()       // { year, month, date, hour, ... }
+date.toArray()        // [year, month, date, hour, ...]
+date.format('...')    // Format the date
+date.diff(other)      // Difference in milliseconds
+```
+
+### Plugins
+
+#### RelativeTimePlugin
+
+Shows relative time like "3 days ago" using Intl.RelativeTimeFormat.
+
+```typescript
+import { extend, RelativeTimePlugin } from 'volt-date';
+
+extend(RelativeTimePlugin);
+
+const date = volt(Date.now() - 3600000); // 1 hour ago
+console.log(date.fromNow()); // "1 hour ago"
+console.log(date.toNow());   // "in 1 hour"
+```
+
+#### TimezonePlugin
+
+Manage timezones with explicit methods.
+
+```typescript
+import { extend, TimezonePlugin } from 'volt-date';
+
+extend(TimezonePlugin);
+
+const date = volt('2024-01-15T12:00:00Z');
+const seoul = date.tz('Asia/Seoul');
+const utc = seoul.utc();
+const local = seoul.local();
+```
+
+#### CalendarPlugin
+
+Get calendar formatted dates.
+
+```typescript
+import { extend, CalendarPlugin } from 'volt-date';
+
+extend(CalendarPlugin);
+
+const date = volt();
+console.log(date.calendar()); // "Today at 12:00"
+```
+
+#### DurationPlugin
+
+Work with time durations.
+
+```typescript
+import { extend, DurationPlugin } from 'volt-date';
+
+extend(DurationPlugin);
+
+const duration = volt.duration(1, 'hour');
+console.log(duration.asMilliseconds()); // 3600000
+console.log(duration.humanize());       // "an hour"
+```
+
+#### LocaleDataPlugin
+
+Get locale-specific information.
+
+```typescript
+import { extend, LocaleDataPlugin } from 'volt-date';
+
+extend(LocaleDataPlugin);
+
+const date = volt().localeData();
+```
+
+## 🔧 Development
+
+### Setup
+
+```bash
+# Install dependencies
+bun install
+
+# Run tests
+bun run test
+
+# Run tests in watch mode
+bun run test:watch
+
+# Build
+bun run build
+
+# Build for production
+bun run build:prod
+
+# Lint
+bun run lint
+
+# Format code
+bun run format
+
+# Check formatting
+bun run format:check
+```
+
+### Project Structure
+
+```
+volt-date/
+├── src/
+│   ├── core.ts              # VDate core class
+│   ├── format.ts            # Format method implementation
+│   ├── getSet.ts            # Getter/Setter methods
+│   ├── manipulate.ts        # Add/Subtract/StartOf/EndOf
+│   ├── query.ts             # Comparison methods
+│   ├── utils.ts             # Utility methods
+│   ├── plugin.ts            # Plugin system
+│   ├── plugins/
+│   │   ├── calendar.ts
+│   │   ├── customParseFormat.ts
+│   │   ├── duration.ts
+│   │   ├── localeData.ts
+│   │   ├── localizedFormat.ts
+│   │   └── minmax.ts
+│   └── index.ts
+├── tests/
+│   └── *.test.ts
+├── eslint.config.js         # ESLint configuration
+├── .prettierrc               # Prettier configuration
+└── package.json
+```
+
+## 🎯 Design Philosophy
+
+### Native-First
+Uses browser's native Intl API for all internationalization and timezone handling. No locale JSON files or timezone databases required.
+
+### Zero-Dependency
+Pure JavaScript with no external dependencies. All functionality comes from JavaScript standards and the Intl API.
+
+### Immutable
+All methods that modify dates return new instances, following functional programming principles.
+
+### Day.js Compatible
+Familiar API for Day.js users, making migration straightforward.
+
+## 🧪 Testing
+
+The project includes 233 tests covering:
+- Core functionality (getters, setters, manipulation)
+- Timezone calculations
+- Localization
+- Plugins
+- Edge cases (leap years, month boundaries, etc.)
+
+Run tests with:
+```bash
+bun run test
+```
+
+## 📊 Bundle Size
+
+- ESM: ~41 KB
+- CJS: ~42 KB
+- (minified sizes will be smaller)
+
+## 🛠️ Technologies
+
+- **TypeScript**: For type safety
+- **Bun**: For development and testing
+- **Vitest**: For testing
+- **ESLint**: For code quality
+- **Prettier**: For code formatting
+
+## 📝 License
+
+MIT
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📧 Support
+
+For issues, questions, or suggestions, please open an issue on GitHub.
 
 ---
 
-### 🚀 Step 1. 프로젝트 스캐폴딩 및 VDate 클래스 기초
-
-_기본적인 클래스 구조와 데이터 속성을 정의합니다._
-
-```markdown
-**[Step 1 요청]**
-TypeScript 기반의 프로젝트 스캐폴딩과 `VDate` 핵심 클래스 구조를 작성해주세요.
-
-**[요구사항]**
-
-1. `VDate` 클래스는 다음 3가지 내부 속성(Private Properties)을 가집니다.
-   - `$d`: Native Date 객체 (UTC 시간 저장)
-   - `$tz`: 타임존 문자열 (기본값: `Intl.DateTimeFormat().resolvedOptions().timeZone`)
-   - `$locale`: 로케일 문자열 (기본값: `navigator.language` 또는 'en-US')
-2. 생성자(`constructor`)는 `date`, `config`를 인자로 받습니다.
-3. `clone()` 메서드를 구현하여 불변성을 유지할 수 있는 기반을 마련하세요.
-4. 유틸리티 함수 `isValid()`를 구현하세요.
-5. `volt(date, config)` 팩토리 함수를 export 하세요.
-```
-
----
-
-### 🌐 Step 2. 타임존 투영(Projection) 기반 Getter/Setter
-
-_가장 중요한 부분입니다. Native Date 메서드를 그대로 쓰면 안 되고, 반드시 타임존을 고려해야 합니다._
-
-```markdown
-**[Step 2 요청]**
-`VDate` 클래스에 날짜 조회(Get) 및 수정(Set) 메서드를 구현해주세요.
-
-**[구현 목록]**
-
-- `year()`, `month()`, `date()`, `day()`, `hour()`, `minute()`, `second()`, `millisecond()`
-
-**[핵심 요구사항 (매우 중요)]**
-
-1. **Getter (조회):** `this.$d.getHours()`처럼 Native 메서드를 직접 사용하면 안 됩니다. 반드시 `Intl.DateTimeFormat`을 사용하여 **현재 설정된 `$tz`(타임존) 기준의 시간**을 추출해야 합니다.
-   - _힌트:_ `formatToParts`를 활용하여 타임존이 적용된 시간 부품을 파싱하세요.
-2. **Setter (수정):** 인자가 전달되면 값을 수정하되, **반드시 새로운 `VDate` 인스턴스를 반환**해야 합니다(Immutable).
-3. **Setter 로직:** 특정 타임존에서의 시간을 변경했을 때, UTC 기준으로는 몇 시가 되는지 역산하여 `$d`를 업데이트해야 합니다.
-```
-
----
-
-### 🎨 Step 3. 포맷팅 (Intl 기반) & 캐싱 최적화
-
-_데이터 파일 없이 포맷팅을 구현하는 핵심 로직입니다._
-
-```markdown
-**[Step 3 요청]**
-`VDate` 클래스에 `format(formatString)` 메서드를 구현해주세요.
-
-**[요구사항]**
-
-1. **토큰 매핑:** `YYYY`, `MM`, `DD`, `dddd`(요일), `HH`, `mm` 등의 포맷 문자열을 정규식으로 파싱하여, `Intl.DateTimeFormat`의 옵션(`year: 'numeric'`, `weekday: 'long'` 등)으로 매핑하는 로직을 작성하세요.
-2. **Native Intl 활용:** 매핑된 옵션과 `$locale`, `$tz` 정보를 사용하여 최종 문자열을 생성하세요.
-3. **성능 최적화 (필수):** `Intl.DateTimeFormat` 객체 생성 비용이 비쌉니다. `locale + timezone + options`를 Key로 하는 **캐싱(Caching) 시스템**을 구현하여 성능 저하를 막으세요.
-```
-
----
-
-### ➕ Step 4. 날짜 조작 (Manipulation)
-
-_날짜 더하기/빼기 및 시작/끝 지점 계산입니다._
-
-```markdown
-**[Step 4 요청]**
-날짜를 조작하는 메서드를 구현해주세요. 모든 메서드는 체이닝이 가능하도록 새로운 `VDate` 인스턴스를 반환해야 합니다.
-
-**[구현 목록]**
-
-1. `add(value, unit)`, `subtract(value, unit)`:
-   - 일(Day), 월(Month), 년(Year) 등의 단위 계산을 지원하세요.
-   - **월 연산 주의:** 1월 31일에서 1달을 더하면 2월 28일(혹은 29일)이 되도록 말일 보정 로직을 포함하세요.
-2. `startOf(unit)`, `endOf(unit)`:
-   - 특정 단위의 시작(00:00:00)과 끝(23:59:59.999)으로 시간을 설정하세요.
-   - 이 역시 현재 설정된 `$tz` 타임존을 기준으로 계산되어야 합니다.
-```
-
----
-
-### 🔌 Step 5. 플러그인 시스템 및 확장 기능
-
-_Native API를 활용한 플러그인 예시입니다._
-
-```markdown
-**[Step 5 요청]**
-`VDate`의 기능을 확장할 수 있는 플러그인 시스템(`extend`)과 예시 플러그인을 작성해주세요.
-
-**[요구사항]**
-
-1. Day.js 스타일의 `volt.extend(plugin)` 구조를 만드세요.
-2. **RelativeTime 플러그인:**
-   - 브라우저 내장 API인 `Intl.RelativeTimeFormat`을 사용하여 "3일 전", "방금 전" 등을 출력하는 플러그인을 구현하세요.
-   - 별도의 언어 설정 파일 없이 `$locale`에 따라 자동 번역되어야 합니다.
-3. **Timezone 플러그인 (Core 통합):**
-   - 이미 Core에 `$tz`가 있지만, 타임존을 변경하는 `tz(timezoneId)`, `utc()`, `local()` 메서드를 명시적으로 구현하세요.
-```
-
----
-
-### 🧪 Step 6. 테스트 및 번들링 설정
-
-_마지막으로 품질을 검증합니다._
-
-```markdown
-**[Step 6 요청]**
-프로젝트 완성을 위해 다음 항목을 작성해주세요.
-
-1. **Vitest 테스트 코드:**
-   - 타임존 관련 테스트 케이스를 중점적으로 작성하세요 (예: 서울에서 9시는 뉴욕에서 전날 19시인가?).
-   - 포맷팅이 로케일(ko-KR, en-US)에 따라 다르게 나오는지 검증하세요.
-2. **인덱스 파일:** 라이브러리의 진입점(`index.ts`)을 정리해주세요.
-```
-
+Built with ❤️ for lightweight date handling in modern JavaScript applications.
