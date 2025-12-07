@@ -9,7 +9,6 @@ export function LocalizedFormatPlugin(VDateClass: typeof VDate): void {
 
     let result = format;
     const locale = this.getLocale();
-    const timezone = this.getTimezone();
 
     // Map locale to common date formats
     const isUS = locale.startsWith('en-US');

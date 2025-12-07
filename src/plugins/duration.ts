@@ -94,7 +94,7 @@ export class Duration {
   }
 
   // Get humanized string
-  humanize(locale?: string): string {
+  humanize(_locale?: string): string {
     const absMs = Math.abs(this.ms);
     const sign = this.ms < 0 ? 'ago' : 'in';
 

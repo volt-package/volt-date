@@ -8,14 +8,13 @@ export function addManipulateMethods(VDateClass: typeof VDate): void {
     value: number,
     unit: ManipulateUnit
   ): VDate {
-    const d = this;
     switch (unit) {
       case "year": {
-        const newDate = d.clone();
-        const newYear = d.year() + value;
+        const newDate = this.clone();
+        const newYear = this.year() + value;
         // Handle day overflow for leap year transitions (e.g., Feb 29)
-        const month = d.month() - 1; // Convert to 0-11 for Date calculation
-        const day = d.date();
+        const month = this.month() - 1; // Convert to 0-11 for Date calculation
+        const day = this.date();
         const maxDay = new Date(Date.UTC(newYear, month + 1, 0)).getUTCDate();
         const fixedDay = Math.min(day, maxDay);
         // Set date first to avoid overflow, then year
@@ -24,53 +23,53 @@ export function addManipulateMethods(VDateClass: typeof VDate): void {
         return newDate;
       }
       case "month": {
-        let year = d.year();
-        let month = d.month() - 1 + value; // Convert to 0-11, add value, convert back
-        let day = d.date();
+        let year = this.year();
+        let month = this.month() - 1 + value; // Convert to 0-11, add value, convert back
+        let day = this.date();
         year += Math.floor(month / 12);
         month = ((month % 12) + 12) % 12; // Proper modulo for negative numbers
         const maxDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
         if (day > maxDay) day = maxDay;
-        return d
+        return this
           .year(year)
           .month(month + 1)
           .date(day); // Convert back to 1-12
       }
       case "week":
-        return d.add(value * 7, "day");
+        return this.add(value * 7, "day");
       case "day": {
-        const newDate = d.clone();
-        newDate["$d"].setUTCDate(d.date() + value);
+        const newDate = this.clone();
+        newDate["$d"].setUTCDate(this.date() + value);
         return newDate;
       }
       case "hour": {
         const ms = value * 60 * 60 * 1000;
         const newDate = new VDate(
-          new Date(d.getInternalDate().getTime() + ms),
-          { tz: d.getTimezone(), locale: d.getLocale() }
+          new Date(this.getInternalDate().getTime() + ms),
+          { tz: this.getTimezone(), locale: this.getLocale() }
         );
         return newDate;
       }
       case "minute": {
         const ms = value * 60 * 1000;
         const newDate = new VDate(
-          new Date(d.getInternalDate().getTime() + ms),
-          { tz: d.getTimezone(), locale: d.getLocale() }
+          new Date(this.getInternalDate().getTime() + ms),
+          { tz: this.getTimezone(), locale: this.getLocale() }
         );
         return newDate;
       }
       case "second": {
         const ms = value * 1000;
         const newDate = new VDate(
-          new Date(d.getInternalDate().getTime() + ms),
-          { tz: d.getTimezone(), locale: d.getLocale() }
+          new Date(this.getInternalDate().getTime() + ms),
+          { tz: this.getTimezone(), locale: this.getLocale() }
         );
         return newDate;
       }
       case "millisecond": {
         const newDate = new VDate(
-          new Date(d.getInternalDate().getTime() + value),
-          { tz: d.getTimezone(), locale: d.getLocale() }
+          new Date(this.getInternalDate().getTime() + value),
+          { tz: this.getTimezone(), locale: this.getLocale() }
         );
         return newDate;
       }
