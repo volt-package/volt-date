@@ -4,11 +4,12 @@ A lightweight, zero-dependency date library to replace Day.js, built with Native
 
 ## ✨ Features
 
-- **Lightweight**: Minimal bundle size with no external dependencies
+- **Ultra-Lightweight**: Core only 11KB minified (ESM), plugins optional
 - **Zero-Dependency**: Uses native JavaScript and Intl API only
 - **Immutable**: All methods return new instances, preserving the original
-- **Timezone Support**: Built-in timezone handling using Intl API
-- **Plugin System**: Extensible architecture for custom functionality
+- **Timezone Support**: Timezone handling using Intl API (optional plugin)
+- **Plugin System**: Extensible architecture with optional plugins
+- **Tree-Shakable**: Only import what you need
 - **TypeScript**: Fully typed with first-class TypeScript support
 - **Day.js Compatible API**: Familiar API for Day.js users
 
@@ -23,7 +24,7 @@ bun add volt-date
 ## 🚀 Quick Start
 
 ```typescript
-import { volt } from 'volt-date';
+import { VDate, volt } from 'volt-date';
 
 // Create a date
 const date = volt('2024-01-15T12:00:00Z');
@@ -43,9 +44,29 @@ const result = date
   .startOf('day')
   .format('YYYY-MM-DD');
 
-// Timezone support
-const seoul = date.tz('Asia/Seoul');
+// With custom timezone
+const seoul = volt('2024-01-15T12:00:00Z', { tz: 'Asia/Seoul' });
 console.log(seoul.hour()); // 21 (UTC+9)
+```
+
+### Using Plugins
+
+Plugins are optional and imported separately to keep the core bundle minimal.
+
+```typescript
+import { VDate, extend } from 'volt-date';
+import { RelativeTimePlugin, TimezonePlugin } from 'volt-date/plugins';
+
+// Enable plugins
+extend(RelativeTimePlugin);
+extend(TimezonePlugin);
+
+// Now you can use plugin methods
+const date = new VDate(Date.now() - 3600000);
+console.log(date.fromNow()); // "1 hour ago"
+
+const seoul = date.tz('Asia/Seoul');
+console.log(seoul.format('HH:mm')); // Seoul time
 ```
 
 ## 📚 API Documentation
@@ -140,16 +161,19 @@ date.diff(other)      // Difference in milliseconds
 
 ### Plugins
 
+All plugins are optional and imported from `'volt-date/plugins'` to keep the core bundle minimal.
+
 #### RelativeTimePlugin
 
 Shows relative time like "3 days ago" using Intl.RelativeTimeFormat.
 
 ```typescript
-import { extend, RelativeTimePlugin } from 'volt-date';
+import { VDate, extend } from 'volt-date';
+import { RelativeTimePlugin } from 'volt-date/plugins';
 
 extend(RelativeTimePlugin);
 
-const date = volt(Date.now() - 3600000); // 1 hour ago
+const date = new VDate(Date.now() - 3600000); // 1 hour ago
 console.log(date.fromNow()); // "1 hour ago"
 console.log(date.toNow());   // "in 1 hour"
 ```
@@ -159,11 +183,12 @@ console.log(date.toNow());   // "in 1 hour"
 Manage timezones with explicit methods.
 
 ```typescript
-import { extend, TimezonePlugin } from 'volt-date';
+import { VDate, extend } from 'volt-date';
+import { TimezonePlugin } from 'volt-date/plugins';
 
 extend(TimezonePlugin);
 
-const date = volt('2024-01-15T12:00:00Z');
+const date = new VDate('2024-01-15T12:00:00Z');
 const seoul = date.tz('Asia/Seoul');
 const utc = seoul.utc();
 const local = seoul.local();
@@ -174,11 +199,12 @@ const local = seoul.local();
 Get calendar formatted dates.
 
 ```typescript
-import { extend, CalendarPlugin } from 'volt-date';
+import { VDate, extend } from 'volt-date';
+import { CalendarPlugin } from 'volt-date/plugins';
 
 extend(CalendarPlugin);
 
-const date = volt();
+const date = new VDate();
 console.log(date.calendar()); // "Today at 12:00"
 ```
 
@@ -187,13 +213,17 @@ console.log(date.calendar()); // "Today at 12:00"
 Work with time durations.
 
 ```typescript
-import { extend, DurationPlugin } from 'volt-date';
+import { VDate, extend } from 'volt-date';
+import { DurationPlugin, Duration } from 'volt-date/plugins';
 
 extend(DurationPlugin);
 
-const duration = volt.duration(1, 'hour');
+const duration = new Duration(1, 'hour');
 console.log(duration.asMilliseconds()); // 3600000
 console.log(duration.humanize());       // "an hour"
+
+// Or via VDate static method
+const d = (VDate as any).duration(1, 'hour');
 ```
 
 #### LocaleDataPlugin
@@ -201,11 +231,48 @@ console.log(duration.humanize());       // "an hour"
 Get locale-specific information.
 
 ```typescript
-import { extend, LocaleDataPlugin } from 'volt-date';
+import { VDate, extend } from 'volt-date';
+import { LocaleDataPlugin } from 'volt-date/plugins';
 
 extend(LocaleDataPlugin);
 
-const date = volt().localeData();
+const date = new VDate();
+const localeData = (date as any).localeData();
+console.log(localeData.months); // ["January", "February", ...]
+```
+
+#### MinMaxPlugin
+
+Find minimum or maximum date from a list.
+
+```typescript
+import { VDate, extend } from 'volt-date';
+import { MinMaxPlugin } from 'volt-date/plugins';
+
+extend(MinMaxPlugin);
+
+const dates = [
+  new VDate('2024-01-15'),
+  new VDate('2024-01-20'),
+  new VDate('2024-01-10')
+];
+
+const max = (VDate as any).max(dates);
+const min = (VDate as any).min(dates);
+```
+
+#### CustomParseFormatPlugin
+
+Parse dates with custom formats.
+
+```typescript
+import { VDate, extend } from 'volt-date';
+import { CustomParseFormatPlugin } from 'volt-date/plugins';
+
+extend(CustomParseFormatPlugin);
+
+const date = (VDate as any).parseFormat('01/15/2024', 'MM/DD/YYYY');
+console.log(date.format('YYYY-MM-DD')); // "2024-01-15"
 ```
 
 ## 🔧 Development
@@ -251,17 +318,24 @@ volt-date/
 │   ├── utils.ts             # Utility methods
 │   ├── plugin.ts            # Plugin system
 │   ├── plugins/
+│   │   ├── index.ts         # Plugin exports
 │   │   ├── calendar.ts
 │   │   ├── customParseFormat.ts
 │   │   ├── duration.ts
 │   │   ├── localeData.ts
 │   │   ├── localizedFormat.ts
 │   │   └── minmax.ts
-│   └── index.ts
+│   └── index.ts             # Main exports (core only)
 ├── tests/
 │   └── *.test.ts
+├── dist/
+│   ├── index.esm.js         # Core bundle (ESM)
+│   ├── index.cjs.js         # Core bundle (CJS)
+│   └── plugins/
+│       ├── index.esm.js     # Plugins bundle (ESM)
+│       └── index.cjs.js     # Plugins bundle (CJS)
 ├── eslint.config.js         # ESLint configuration
-├── .prettierrc               # Prettier configuration
+├── .prettierrc              # Prettier configuration
 └── package.json
 ```
 
@@ -275,6 +349,12 @@ Pure JavaScript with no external dependencies. All functionality comes from Java
 
 ### Immutable
 All methods that modify dates return new instances, following functional programming principles.
+
+### Plugin Architecture
+Core bundle is minimal (11KB minified). Optional plugins are imported separately, allowing you to only include what you need.
+
+### Tree-Shakable
+Built with ESM-first approach. Unused code is eliminated during build, keeping your bundle size minimal.
 
 ### Day.js Compatible
 Familiar API for Day.js users, making migration straightforward.
@@ -295,9 +375,19 @@ bun run test
 
 ## 📊 Bundle Size
 
-- ESM: ~41 KB
-- CJS: ~42 KB
-- (minified sizes will be smaller)
+Production build (minified):
+
+**Core (required)**
+- ESM: 11.27 KB
+- CJS: 11.76 KB
+
+**Plugins (optional)**
+- ESM: 20.76 KB
+- CJS: 21.26 KB
+
+**Total if using all features**: ~32 KB (ESM) / ~33 KB (CJS)
+
+The modular architecture allows you to import only what you need, keeping your bundle size minimal.
 
 ## 🛠️ Technologies
 
