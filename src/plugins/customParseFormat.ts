@@ -100,36 +100,23 @@ export function CustomParseFormatPlugin(VDateClass: typeof VDate): void {
       if (!matched) {
         // Regular character - escape it
         const char = formatString[formatIndex];
-        regexPattern +=
-          char === '.'
-            ? '\\.'
-            : char === '?'
-              ? '\\?'
-              : char === '*'
-                ? '\\*'
-                : char === '+'
-                  ? '\\+'
-                  : char === '^'
-                    ? '\\^'
-                    : char === '$'
-                      ? '\\$'
-                      : char === '{'
-                        ? '\\{'
-                        : char === '}'
-                          ? '\\}'
-                          : char === '['
-                            ? '\\['
-                            : char === ']'
-                              ? '\\]'
-                              : char === '|'
-                                ? '\\|'
-                                : char === '\\'
-                                  ? '\\\\'
-                                  : char === '('
-                                    ? '\\('
-                                    : char === ')'
-                                      ? '\\)'
-                                      : char;
+        const escapeMap: Record<string, string> = {
+          '.': '\\.',
+          '?': '\\?',
+          '*': '\\*',
+          '+': '\\+',
+          '^': '\\^',
+          '$': '\\$',
+          '{': '\\{',
+          '}': '\\}',
+          '[': '\\[',
+          ']': '\\]',
+          '|': '\\|',
+          '\\': '\\\\',
+          '(': '\\(',
+          ')': '\\)',
+        };
+        regexPattern += escapeMap[char] || char;
         formatIndex++;
       }
     }

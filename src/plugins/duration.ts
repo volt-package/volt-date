@@ -149,50 +149,28 @@ export class Duration {
 
   // Get duration as object
   asObject(): { [key: string]: number } {
-    const years = Math.floor(this.ms / (365.25 * 24 * 60 * 60 * 1000));
-    const months = Math.floor(
-      (this.ms % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000)
-    );
-    const weeks = Math.floor(
-      ((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) /
-        (7 * 24 * 60 * 60 * 1000)
-    );
-    const days = Math.floor(
-      (((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) %
-        (7 * 24 * 60 * 60 * 1000)) /
-        (24 * 60 * 60 * 1000)
-    );
-    const hours = Math.floor(
-      ((((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) %
-        (7 * 24 * 60 * 60 * 1000)) %
-        (24 * 60 * 60 * 1000)) /
-        (60 * 60 * 1000)
-    );
-    const minutes = Math.floor(
-      (((((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) %
-        (7 * 24 * 60 * 60 * 1000)) %
-        (24 * 60 * 60 * 1000)) %
-        (60 * 60 * 1000)) /
-        (60 * 1000)
-    );
-    const seconds = Math.floor(
-      ((((((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) %
-        (7 * 24 * 60 * 60 * 1000)) %
-        (24 * 60 * 60 * 1000)) %
-        (60 * 60 * 1000)) %
-        (60 * 1000)) /
-        1000
-    );
+    const MS_YEAR = 365.25 * 24 * 60 * 60 * 1000;
+    const MS_MONTH = 30.44 * 24 * 60 * 60 * 1000;
+    const MS_WEEK = 7 * 24 * 60 * 60 * 1000;
+    const MS_DAY = 24 * 60 * 60 * 1000;
+    const MS_HOUR = 60 * 60 * 1000;
+    const MS_MINUTE = 60 * 1000;
 
-    return {
-      years,
-      months,
-      weeks,
-      days,
-      hours,
-      minutes,
-      seconds,
-    };
+    let remaining = this.ms;
+    const years = Math.floor(remaining / MS_YEAR);
+    remaining %= MS_YEAR;
+    const months = Math.floor(remaining / MS_MONTH);
+    remaining %= MS_MONTH;
+    const weeks = Math.floor(remaining / MS_WEEK);
+    remaining %= MS_WEEK;
+    const days = Math.floor(remaining / MS_DAY);
+    remaining %= MS_DAY;
+    const hours = Math.floor(remaining / MS_HOUR);
+    remaining %= MS_HOUR;
+    const minutes = Math.floor(remaining / MS_MINUTE);
+    const seconds = Math.floor((remaining % MS_MINUTE) / 1000);
+
+    return { years, months, weeks, days, hours, minutes, seconds };
   }
 }
 
