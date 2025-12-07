@@ -1,0 +1,44 @@
+{
+  "name": "volt-date",
+  "version": "0.1.0",
+  "description": "A lightweight date library to replace Day.js, using Native-First & Zero-Dependency philosophy",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "type": "module",
+  "private": false,
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist/esm --target browser --format esm && bun build ./src/index.ts --outdir ./dist/cjs --target browser --format cjs && bun run build:types && bun run postbuild",
+    "build:prod": "bun build ./src/index.ts --outdir ./dist/esm --target browser --format esm --minify && bun build ./src/index.ts --outdir ./dist/cjs --target browser --format cjs --minify && bun run build:types && bun run postbuild",
+    "postbuild": "mv ./dist/esm/index.js ./dist/index.esm.js 2>/dev/null || true && mv ./dist/cjs/index.js ./dist/index.cjs.js 2>/dev/null || true && rm -rf ./dist/esm ./dist/cjs 2>/dev/null || true",
+    "build:types": "bunx tsc --declaration --emitDeclarationOnly --outDir ./dist --noEmit false || true",
+    "test": "bun test tests/**/*.test.ts",
+    "test:watch": "bun test tests/**/*.test.ts --watch",
+    "prepack": "bun run build:prod"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.9.3",
+    "vitest": "^1.0.0"
+  },
+  "keywords": [
+    "date",
+    "time",
+    "dayjs",
+    "lightweight",
+    "zero-dependency",
+    "timezone",
+    "intl",
+    "immutable"
+  ],
+  "author": "",
+  "license": "MIT",
+  "sideEffects": false
+}

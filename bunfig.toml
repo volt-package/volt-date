@@ -1,0 +1,19 @@
+# Bun Configuration File
+# Reference: https://bun.sh/docs/runtime/bunfig
+
+[build]
+# Entry point
+root = "src"
+outdir = "dist"
+target = "browser"
+
+# Compile settings
+splitting = true
+sourcemap = "linked"
+
+[test]
+# Test root directory
+root = "tests"
+
+# TimeoutMs for each test
+timeout = 5000
