@@ -1,6 +1,14 @@
 import { VDate } from '../core';
 
-type DurationUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond';
+type DurationUnit =
+  | 'year'
+  | 'month'
+  | 'week'
+  | 'day'
+  | 'hour'
+  | 'minute'
+  | 'second'
+  | 'millisecond';
 
 export class Duration {
   private ms: number;
@@ -83,13 +91,19 @@ export class Duration {
 
   // Add durations
   add(input: number | Duration, unit?: DurationUnit): Duration {
-    const other = input instanceof Duration ? input.asMilliseconds() : new Duration(input, unit!).asMilliseconds();
+    const other =
+      input instanceof Duration
+        ? input.asMilliseconds()
+        : new Duration(input, unit!).asMilliseconds();
     return new Duration(this.ms + other, 'millisecond');
   }
 
   // Subtract durations
   subtract(input: number | Duration, unit?: DurationUnit): Duration {
-    const other = input instanceof Duration ? input.asMilliseconds() : new Duration(input, unit!).asMilliseconds();
+    const other =
+      input instanceof Duration
+        ? input.asMilliseconds()
+        : new Duration(input, unit!).asMilliseconds();
     return new Duration(this.ms - other, 'millisecond');
   }
 
@@ -136,27 +150,34 @@ export class Duration {
   // Get duration as object
   asObject(): { [key: string]: number } {
     const years = Math.floor(this.ms / (365.25 * 24 * 60 * 60 * 1000));
-    const months = Math.floor((this.ms % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
+    const months = Math.floor(
+      (this.ms % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000)
+    );
     const weeks = Math.floor(
-      ((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) / (7 * 24 * 60 * 60 * 1000)
+      ((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) /
+        (7 * 24 * 60 * 60 * 1000)
     );
     const days = Math.floor(
-      (((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) % (7 * 24 * 60 * 60 * 1000)) /
+      (((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) %
+        (7 * 24 * 60 * 60 * 1000)) /
         (24 * 60 * 60 * 1000)
     );
     const hours = Math.floor(
-      ((((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) % (7 * 24 * 60 * 60 * 1000)) %
+      ((((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) %
+        (7 * 24 * 60 * 60 * 1000)) %
         (24 * 60 * 60 * 1000)) /
         (60 * 60 * 1000)
     );
     const minutes = Math.floor(
-      (((((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) % (7 * 24 * 60 * 60 * 1000)) %
+      (((((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) %
+        (7 * 24 * 60 * 60 * 1000)) %
         (24 * 60 * 60 * 1000)) %
         (60 * 60 * 1000)) /
         (60 * 1000)
     );
     const seconds = Math.floor(
-      ((((((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) % (7 * 24 * 60 * 60 * 1000)) %
+      ((((((this.ms % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) %
+        (7 * 24 * 60 * 60 * 1000)) %
         (24 * 60 * 60 * 1000)) %
         (60 * 60 * 1000)) %
         (60 * 1000)) /
@@ -177,7 +198,10 @@ export class Duration {
 
 export function DurationPlugin(VDateClass: typeof VDate): void {
   // Static method to create duration
-  (VDateClass as any).duration = function (input: number | { [key: string]: number }, unit?: DurationUnit): Duration {
+  (VDateClass as any).duration = function (
+    input: number | { [key: string]: number },
+    unit?: DurationUnit
+  ): Duration {
     return new Duration(input, unit);
   };
 
@@ -187,7 +211,9 @@ export function DurationPlugin(VDateClass: typeof VDate): void {
   };
 
   // Instance method: get duration from this date to another
-  (VDateClass.prototype as any).toDuration = function (compared?: VDate | Date | string | number): Duration {
+  (VDateClass.prototype as any).toDuration = function (
+    compared?: VDate | Date | string | number
+  ): Duration {
     const other = compared
       ? compared instanceof VDateClass
         ? compared

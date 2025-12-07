@@ -19,10 +19,22 @@ export function LocaleDataPlugin(VDateClass: typeof VDate): void {
 
     // Create formatters for different parts
     const monthFormatter = new Intl.DateTimeFormat(locale, { month: 'long', timeZone: timezone });
-    const monthShortFormatter = new Intl.DateTimeFormat(locale, { month: 'short', timeZone: timezone });
-    const weekdayFormatter = new Intl.DateTimeFormat(locale, { weekday: 'long', timeZone: timezone });
-    const weekdayShortFormatter = new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: timezone });
-    const weekdayMinFormatter = new Intl.DateTimeFormat(locale, { weekday: 'narrow', timeZone: timezone });
+    const monthShortFormatter = new Intl.DateTimeFormat(locale, {
+      month: 'short',
+      timeZone: timezone,
+    });
+    const weekdayFormatter = new Intl.DateTimeFormat(locale, {
+      weekday: 'long',
+      timeZone: timezone,
+    });
+    const weekdayShortFormatter = new Intl.DateTimeFormat(locale, {
+      weekday: 'short',
+      timeZone: timezone,
+    });
+    const weekdayMinFormatter = new Intl.DateTimeFormat(locale, {
+      weekday: 'narrow',
+      timeZone: timezone,
+    });
 
     // Get all months
     const months = [];

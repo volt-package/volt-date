@@ -1,6 +1,14 @@
 import { VDate } from './core';
 
-export type QueryUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond';
+export type QueryUnit =
+  | 'year'
+  | 'month'
+  | 'week'
+  | 'day'
+  | 'hour'
+  | 'minute'
+  | 'second'
+  | 'millisecond';
 
 export function addQueryMethods(VDateClass: typeof VDate): void {
   // isBefore - 지정된 날짜보다 이전인지 확인
@@ -80,14 +88,10 @@ export function addQueryMethods(VDateClass: typeof VDate): void {
     const endDate = end instanceof VDate ? end : new VDate(end);
 
     const isAfterStart =
-      inclusivity[0] === '['
-        ? this.isSameOrAfter(startDate, unit)
-        : this.isAfter(startDate, unit);
+      inclusivity[0] === '[' ? this.isSameOrAfter(startDate, unit) : this.isAfter(startDate, unit);
 
     const isBeforeEnd =
-      inclusivity[1] === ']'
-        ? this.isSameOrBefore(endDate, unit)
-        : this.isBefore(endDate, unit);
+      inclusivity[1] === ']' ? this.isSameOrBefore(endDate, unit) : this.isBefore(endDate, unit);
 
     return isAfterStart && isBeforeEnd;
   };

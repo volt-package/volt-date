@@ -1,5 +1,14 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { VDate, extend, MinMaxPlugin, LocaleDataPlugin, CalendarPlugin, DurationPlugin, Duration, CustomParseFormatPlugin } from '../src/core';
+import {
+  VDate,
+  extend,
+  MinMaxPlugin,
+  LocaleDataPlugin,
+  CalendarPlugin,
+  DurationPlugin,
+  Duration,
+  CustomParseFormatPlugin,
+} from '../src/core';
 
 describe('Tier 4 Plugins', () => {
   describe('MinMax Plugin', () => {

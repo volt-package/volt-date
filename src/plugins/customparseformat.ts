@@ -40,16 +40,24 @@ export function CustomParseFormatPlugin(VDateClass: typeof VDate): void {
     { token: 'D', regex: /\d{1,2}/, getValue: (v: string) => parseInt(v) },
     { token: 'HH', regex: /\d{2}/, getValue: (v: string) => parseInt(v) },
     { token: 'H', regex: /\d{1,2}/, getValue: (v: string) => parseInt(v) },
-    { token: 'hh', regex: /\d{2}/, getValue: (v: string) => {
-      let h = parseInt(v);
-      if (h === 12) h = 0;
-      return h;
-    }},
-    { token: 'h', regex: /\d{1,2}/, getValue: (v: string) => {
-      let h = parseInt(v);
-      if (h === 12) h = 0;
-      return h;
-    }},
+    {
+      token: 'hh',
+      regex: /\d{2}/,
+      getValue: (v: string) => {
+        let h = parseInt(v);
+        if (h === 12) h = 0;
+        return h;
+      },
+    },
+    {
+      token: 'h',
+      regex: /\d{1,2}/,
+      getValue: (v: string) => {
+        let h = parseInt(v);
+        if (h === 12) h = 0;
+        return h;
+      },
+    },
     { token: 'mm', regex: /\d{2}/, getValue: (v: string) => parseInt(v) },
     { token: 'm', regex: /\d{1,2}/, getValue: (v: string) => parseInt(v) },
     { token: 'ss', regex: /\d{2}/, getValue: (v: string) => parseInt(v) },
@@ -92,7 +100,36 @@ export function CustomParseFormatPlugin(VDateClass: typeof VDate): void {
       if (!matched) {
         // Regular character - escape it
         const char = formatString[formatIndex];
-        regexPattern += char === '.' ? '\\.' : char === '?' ? '\\?' : char === '*' ? '\\*' : char === '+' ? '\\+' : char === '^' ? '\\^' : char === '$' ? '\\$' : char === '{' ? '\\{' : char === '}' ? '\\}' : char === '[' ? '\\[' : char === ']' ? '\\]' : char === '|' ? '\\|' : char === '\\' ? '\\\\' : char === '(' ? '\\(' : char === ')' ? '\\)' : char;
+        regexPattern +=
+          char === '.'
+            ? '\\.'
+            : char === '?'
+              ? '\\?'
+              : char === '*'
+                ? '\\*'
+                : char === '+'
+                  ? '\\+'
+                  : char === '^'
+                    ? '\\^'
+                    : char === '$'
+                      ? '\\$'
+                      : char === '{'
+                        ? '\\{'
+                        : char === '}'
+                          ? '\\}'
+                          : char === '['
+                            ? '\\['
+                            : char === ']'
+                              ? '\\]'
+                              : char === '|'
+                                ? '\\|'
+                                : char === '\\'
+                                  ? '\\\\'
+                                  : char === '('
+                                    ? '\\('
+                                    : char === ')'
+                                      ? '\\)'
+                                      : char;
         formatIndex++;
       }
     }

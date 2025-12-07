@@ -1,25 +1,18 @@
-import { addGetSetMethods } from "./getset";
-import { addFormatMethod } from "./format";
-import { addManipulateMethods } from "./manipulate";
-import { addQueryMethods, type QueryUnit } from "./query";
-import { addUtilMethods } from "./utils";
-import { extend, RelativeTimePlugin, TimezonePlugin } from "./plugin";
-import { MinMaxPlugin } from "./plugins/minmax";
-import { LocaleDataPlugin } from "./plugins/localedata";
-import { CalendarPlugin } from "./plugins/calendar";
-import { LocalizedFormatPlugin } from "./plugins/localizedformat";
-import { DurationPlugin, Duration } from "./plugins/duration";
-import { CustomParseFormatPlugin } from "./plugins/customparseformat";
+import { addGetSetMethods } from './getset';
+import { addFormatMethod } from './format';
+import { addManipulateMethods } from './manipulate';
+import { addQueryMethods, type QueryUnit } from './query';
+import { addUtilMethods } from './utils';
+import { extend, RelativeTimePlugin, TimezonePlugin } from './plugin';
+import { MinMaxPlugin } from './plugins/minmax';
+import { LocaleDataPlugin } from './plugins/localedata';
+import { CalendarPlugin } from './plugins/calendar';
+import { LocalizedFormatPlugin } from './plugins/localizedformat';
+import { DurationPlugin, Duration } from './plugins/duration';
+import { CustomParseFormatPlugin } from './plugins/customparseformat';
 
 export { extend, RelativeTimePlugin, TimezonePlugin };
-export {
-  MinMaxPlugin,
-  LocaleDataPlugin,
-  CalendarPlugin,
-  LocalizedFormatPlugin,
-  DurationPlugin,
-  Duration,
-};
+export { MinMaxPlugin, LocaleDataPlugin, CalendarPlugin, LocalizedFormatPlugin, DurationPlugin, Duration };
 export { CustomParseFormatPlugin };
 export type { QueryUnit };
 
@@ -34,13 +27,7 @@ export class VDate {
   private $locale: string;
 
   constructor(
-    date:
-      | Date
-      | string
-      | number
-      | VDate
-      | any[]
-      | Record<string, number> = new Date(),
+    date: Date | string | number | VDate | any[] | Record<string, number> = new Date(),
     config?: VDateConfig
   ) {
     if (date instanceof VDate) {
@@ -49,41 +36,13 @@ export class VDate {
       this.$d = new Date(date.getTime());
     } else if (Array.isArray(date)) {
       // Array parsing: [year, month (0-11), day, hour, minute, second, millisecond]
-      const [
-        year,
-        month = 0,
-        day = 1,
-        hour = 0,
-        minute = 0,
-        second = 0,
-        millisecond = 0,
-      ] = date;
-      this.$d = new Date(
-        Date.UTC(year, month, day, hour, minute, second, millisecond)
-      );
-    } else if (typeof date === "object" && date !== null) {
+      const [year, month = 0, day = 1, hour = 0, minute = 0, second = 0, millisecond = 0] = date;
+      this.$d = new Date(Date.UTC(year, month, day, hour, minute, second, millisecond));
+    } else if (typeof date === 'object' && date !== null) {
       // Object parsing: { year, month, date, hour, minute, second, millisecond }
-      const {
-        year,
-        month,
-        date: dateVal,
-        hour = 0,
-        minute = 0,
-        second = 0,
-        millisecond = 0,
-      } = date;
-      this.$d = new Date(
-        Date.UTC(
-          year,
-          (month || 1) - 1,
-          dateVal || 1,
-          hour,
-          minute,
-          second,
-          millisecond
-        )
-      );
-    } else if (typeof date === "string" || typeof date === "number") {
+      const { year, month, date: dateVal, hour = 0, minute = 0, second = 0, millisecond = 0 } = date;
+      this.$d = new Date(Date.UTC(year, (month || 1) - 1, dateVal || 1, hour, minute, second, millisecond));
+    } else if (typeof date === 'string' || typeof date === 'number') {
       this.$d = new Date(date);
     } else {
       this.$d = new Date();
@@ -91,25 +50,25 @@ export class VDate {
 
     // Validate that the date is valid
     if (isNaN(this.$d.getTime())) {
-      throw new Error("Invalid date");
+      throw new Error('Invalid date');
     }
 
     try {
       this.$tz = config?.tz || Intl.DateTimeFormat().resolvedOptions().timeZone;
     } catch {
-      this.$tz = "UTC";
+      this.$tz = 'UTC';
     }
 
     try {
       if (config?.locale) {
         this.$locale = config.locale;
-      } else if (typeof navigator !== "undefined" && navigator.language) {
+      } else if (typeof navigator !== 'undefined' && navigator.language) {
         this.$locale = navigator.language;
       } else {
-        this.$locale = "en-US";
+        this.$locale = 'en-US';
       }
     } catch {
-      this.$locale = "en-US";
+      this.$locale = 'en-US';
     }
   }
 
@@ -153,10 +112,7 @@ export function isValid(date: unknown): date is Date {
   return !isNaN(date.getTime());
 }
 
-export function volt(
-  date: Date | string | number | VDate = new Date(),
-  config?: VDateConfig
-): VDate {
+export function volt(date: Date | string | number | VDate = new Date(), config?: VDateConfig): VDate {
   return new VDate(date, config);
 }
 

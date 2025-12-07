@@ -13,7 +13,9 @@ export function extend(plugin: Plugin): void {
 }
 
 export function RelativeTimePlugin(VDateClass: typeof VDate): void {
-  (VDateClass.prototype as any).fromNow = function (options?: Intl.RelativeTimeFormatOptions): string {
+  (VDateClass.prototype as any).fromNow = function (
+    options?: Intl.RelativeTimeFormatOptions
+  ): string {
     const locale = this.getLocale();
     const now = new VDate();
     const diff = this.unix() - now.unix();
@@ -34,7 +36,9 @@ export function RelativeTimePlugin(VDateClass: typeof VDate): void {
     return rtf.format(years, 'year');
   };
 
-  (VDateClass.prototype as any).toNow = function (options?: Intl.RelativeTimeFormatOptions): string {
+  (VDateClass.prototype as any).toNow = function (
+    options?: Intl.RelativeTimeFormatOptions
+  ): string {
     const locale = this.getLocale();
     const now = new VDate();
     const diff = now.unix() - this.unix();

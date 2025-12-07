@@ -52,7 +52,7 @@ export function addGetSetMethods(VDateClass: typeof VDate): void {
       return days.indexOf(weekdayStr);
     }
     const date = this.clone();
-    const currentDay = (this.day() as number);
+    const currentDay = this.day() as number;
     const diff = value - currentDay;
     date['$d'].setUTCDate(date['$d'].getUTCDate() + diff);
     return date;

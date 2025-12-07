@@ -12,9 +12,7 @@ export interface CalendarFormat {
 }
 
 export function CalendarPlugin(VDateClass: typeof VDate): void {
-  (VDateClass.prototype as any).calendar = function (
-    options?: Partial<CalendarFormat>
-  ): string {
+  (VDateClass.prototype as any).calendar = function (options?: Partial<CalendarFormat>): string {
     const now = new VDate();
     const today = now.clone().startOf('day');
     const tomorrow = today.clone().add(1, 'day');

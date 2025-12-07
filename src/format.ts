@@ -1,4 +1,4 @@
-import { VDate } from "./core";
+import { VDate } from './core';
 
 export function clearFormatterCache(): void {
   // Formatter cache was removed as each call creates new formatter
@@ -10,14 +10,12 @@ export function addFormatMethod(VDateClass: typeof VDate): void {
     let result = pattern;
     const locale = this.getLocale();
     const timezone = this.getTimezone();
-    const marker = "\uFFF0";
+    const marker = '\uFFF0';
     const replacements: Record<string, string> = {};
     let markerCount = 0;
 
     // Get or create formatter for caching
-    const getOrCreateFormatter = (
-      opts: Intl.DateTimeFormatOptions
-    ): Intl.DateTimeFormat => {
+    const getOrCreateFormatter = (opts: Intl.DateTimeFormatOptions): Intl.DateTimeFormat => {
       return new Intl.DateTimeFormat(locale, {
         timeZone: timezone,
         ...opts,
@@ -27,83 +25,79 @@ export function addFormatMethod(VDateClass: typeof VDate): void {
     // Tokens in longest-first order to avoid conflicts
     const tokens = [
       {
-        pattern: "YYYY",
+        pattern: 'YYYY',
         replacer: () => (this.year() as number).toString(),
       },
       {
-        pattern: "YY",
+        pattern: 'YY',
         replacer: () => (this.year() as number).toString().slice(-2),
       },
       {
-        pattern: "Q",
+        pattern: 'Q',
         replacer: () => {
           const month = this.month() as number;
           return Math.ceil(month / 3).toString();
         },
       },
       {
-        pattern: "MMMM",
-        replacer: () =>
-          getOrCreateFormatter({ month: "long" }).format(this.toDate()),
+        pattern: 'MMMM',
+        replacer: () => getOrCreateFormatter({ month: 'long' }).format(this.toDate()),
       },
       {
-        pattern: "MMM",
-        replacer: () =>
-          getOrCreateFormatter({ month: "short" }).format(this.toDate()),
+        pattern: 'MMM',
+        replacer: () => getOrCreateFormatter({ month: 'short' }).format(this.toDate()),
       },
       {
-        pattern: "MM",
-        replacer: () => (this.month() as number).toString().padStart(2, "0"),
+        pattern: 'MM',
+        replacer: () => (this.month() as number).toString().padStart(2, '0'),
       },
       {
-        pattern: "M",
+        pattern: 'M',
         replacer: () => (this.month() as number).toString(),
       },
       {
-        pattern: "dddd",
-        replacer: () =>
-          getOrCreateFormatter({ weekday: "long" }).format(this.toDate()),
+        pattern: 'dddd',
+        replacer: () => getOrCreateFormatter({ weekday: 'long' }).format(this.toDate()),
       },
       {
-        pattern: "ddd",
-        replacer: () =>
-          getOrCreateFormatter({ weekday: "short" }).format(this.toDate()),
+        pattern: 'ddd',
+        replacer: () => getOrCreateFormatter({ weekday: 'short' }).format(this.toDate()),
       },
       {
-        pattern: "DD",
-        replacer: () => (this.date() as number).toString().padStart(2, "0"),
+        pattern: 'DD',
+        replacer: () => (this.date() as number).toString().padStart(2, '0'),
       },
       {
-        pattern: "D",
+        pattern: 'D',
         replacer: () => (this.date() as number).toString(),
       },
       {
-        pattern: "dd",
-        replacer: () => (this.day() as number).toString().padStart(2, "0"),
+        pattern: 'dd',
+        replacer: () => (this.day() as number).toString().padStart(2, '0'),
       },
       {
-        pattern: "d",
+        pattern: 'd',
         replacer: () => (this.day() as number).toString(),
       },
       {
-        pattern: "HH",
-        replacer: () => (this.hour() as number).toString().padStart(2, "0"),
+        pattern: 'HH',
+        replacer: () => (this.hour() as number).toString().padStart(2, '0'),
       },
       {
-        pattern: "H",
+        pattern: 'H',
         replacer: () => (this.hour() as number).toString(),
       },
       {
-        pattern: "hh",
+        pattern: 'hh',
         replacer: () => {
           let h = this.hour() as number;
           if (h === 0) h = 12;
           else if (h > 12) h -= 12;
-          return h.toString().padStart(2, "0");
+          return h.toString().padStart(2, '0');
         },
       },
       {
-        pattern: "h",
+        pattern: 'h',
         replacer: () => {
           let h = this.hour() as number;
           if (h === 0) h = 12;
@@ -112,15 +106,15 @@ export function addFormatMethod(VDateClass: typeof VDate): void {
         },
       },
       {
-        pattern: "kk",
+        pattern: 'kk',
         replacer: () => {
           let h = this.hour() as number;
           if (h === 0) h = 24;
-          return h.toString().padStart(2, "0");
+          return h.toString().padStart(2, '0');
         },
       },
       {
-        pattern: "k",
+        pattern: 'k',
         replacer: () => {
           let h = this.hour() as number;
           if (h === 0) h = 24;
@@ -128,67 +122,65 @@ export function addFormatMethod(VDateClass: typeof VDate): void {
         },
       },
       {
-        pattern: "mm",
-        replacer: () => (this.minute() as number).toString().padStart(2, "0"),
+        pattern: 'mm',
+        replacer: () => (this.minute() as number).toString().padStart(2, '0'),
       },
       {
-        pattern: "m",
+        pattern: 'm',
         replacer: () => (this.minute() as number).toString(),
       },
       {
-        pattern: "ss",
-        replacer: () => (this.second() as number).toString().padStart(2, "0"),
+        pattern: 'ss',
+        replacer: () => (this.second() as number).toString().padStart(2, '0'),
       },
       {
-        pattern: "s",
+        pattern: 's',
         replacer: () => (this.second() as number).toString(),
       },
       {
-        pattern: "SSS",
-        replacer: () =>
-          (this.millisecond() as number).toString().padStart(3, "0"),
+        pattern: 'SSS',
+        replacer: () => (this.millisecond() as number).toString().padStart(3, '0'),
       },
       {
-        pattern: "SS",
+        pattern: 'SS',
         replacer: () =>
           Math.floor((this.millisecond() as number) / 10)
             .toString()
-            .padStart(2, "0"),
+            .padStart(2, '0'),
       },
       {
-        pattern: "S",
-        replacer: () =>
-          Math.floor((this.millisecond() as number) / 100).toString(),
+        pattern: 'S',
+        replacer: () => Math.floor((this.millisecond() as number) / 100).toString(),
       },
       {
-        pattern: "X",
+        pattern: 'X',
         replacer: () => Math.floor(this.unix() / 1000).toString(),
       },
       {
-        pattern: "x",
+        pattern: 'x',
         replacer: () => this.unix().toString(),
       },
       {
-        pattern: "A",
-        replacer: () => ((this.hour() as number) >= 12 ? "PM" : "AM"),
+        pattern: 'A',
+        replacer: () => ((this.hour() as number) >= 12 ? 'PM' : 'AM'),
       },
       {
-        pattern: "a",
-        replacer: () => ((this.hour() as number) >= 12 ? "pm" : "am"),
+        pattern: 'a',
+        replacer: () => ((this.hour() as number) >= 12 ? 'pm' : 'am'),
       },
       {
-        pattern: "Z",
+        pattern: 'Z',
         replacer: () => {
-          const fmt = new Intl.DateTimeFormat("en-US", {
-            timeZoneName: "shortOffset",
+          const fmt = new Intl.DateTimeFormat('en-US', {
+            timeZoneName: 'shortOffset',
             timeZone: timezone,
           });
           const parts = fmt.formatToParts(this.toDate());
-          return parts.find((p) => p.type === "timeZoneName")?.value || "";
+          return parts.find((p) => p.type === 'timeZoneName')?.value || '';
         },
       },
-      { pattern: "z", replacer: () => timezone },
-      { pattern: "T", replacer: () => "T" },
+      { pattern: 'z', replacer: () => timezone },
+      { pattern: 'T', replacer: () => 'T' },
     ];
 
     // Replace tokens with markers

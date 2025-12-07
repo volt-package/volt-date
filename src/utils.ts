@@ -7,8 +7,7 @@ export function addUtilMethods(VDateClass: typeof VDate): void {
     const month = this.month() - 1; // 0-11
     const day = this.date();
 
-    const isLeapYear =
-      (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+    const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 
     const daysInMonths = [
       31, // Jan

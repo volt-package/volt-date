@@ -192,10 +192,7 @@ describe('VDate Plugins', () => {
 
     it('should work with manipulation methods', () => {
       const vd = new VDate('2024-01-15T12:00:00Z', { tz: 'UTC' });
-      const result = vd
-        .add(1, 'day')
-        .tz('Asia/Seoul')
-        .fromNow();
+      const result = vd.add(1, 'day').tz('Asia/Seoul').fromNow();
 
       expect(typeof result).toBe('string');
     });
