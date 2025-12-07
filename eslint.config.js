@@ -28,6 +28,7 @@ export default [
       ],
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/explicit-function-return-types": "off",
+      "@typescript-eslint/no-unsafe-declaration-merging": "off",
     },
   },
 ];

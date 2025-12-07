@@ -105,6 +105,68 @@ export class VDate {
   }
 }
 
+// Interface augmentation for dynamically added methods
+export interface VDate {
+  // Plugin methods (dynamically added by plugins)
+  fromNow(options?: Intl.RelativeTimeFormatOptions): string;
+  toNow(options?: Intl.RelativeTimeFormatOptions): string;
+  tz(timezone: string): VDate;
+  utc(): VDate;
+  local(): VDate;
+  localeData?(): any;
+  calendar?(options?: any): string;
+  formatLocalized?(format: string): string;
+  toDuration?(compared?: any): Duration;
+
+  // Manipulate methods (added by addManipulateMethods)
+  add(value: number, unit: string): VDate;
+  subtract(value: number, unit: string): VDate;
+  startOf(unit: string): VDate;
+  endOf(unit: string): VDate;
+  diff(compared: any, unit?: string, precise?: boolean): number;
+  daysInMonth(): number;
+
+  // Getter/Setter methods (added by addGetSetMethods)
+  year(): number;
+  year(value: number): VDate;
+  month(): number;
+  month(value: number): VDate;
+  date(): number;
+  date(value: number): VDate;
+  day(): number;
+  day(value: number): VDate;
+  hour(): number;
+  hour(value: number): VDate;
+  minute(): number;
+  minute(value: number): VDate;
+  second(): number;
+  second(value: number): VDate;
+  millisecond(): number;
+  millisecond(value: number): VDate;
+  get(unit: string): number;
+  set(unit: string, value: number): VDate;
+
+  // Query methods (added by addQueryMethods)
+  isBefore(compared: any, unit?: string): boolean;
+  isAfter(compared: any, unit?: string): boolean;
+  isSame(compared: any, unit?: string): boolean;
+  isSameOrBefore(compared: any, unit?: string): boolean;
+  isSameOrAfter(compared: any, unit?: string): boolean;
+  isBetween(start: any, end: any, unit?: string, inclusivity?: string): boolean;
+  isDayjs(): boolean;
+
+  // Utility methods (added by addUtilMethods)
+  dayOfYear(): number;
+  weekOfYear(): number;
+  isLeapYear(): boolean;
+  quarter(): number;
+  toObject(): Record<string, number>;
+  toArray(): number[];
+
+  // Format method (added by addFormatMethod)
+  format(pattern: string): string;
+}
+
 export function isValid(date: unknown): date is Date {
   if (!(date instanceof Date)) {
     return false;

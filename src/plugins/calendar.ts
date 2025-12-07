@@ -4,11 +4,9 @@ export interface CalendarFormat {
   sameElse: string;
   lastDay: string;
   lastWeek: string;
-  lastMonth?: string;
   sameDay: string;
   nextDay: string;
   nextWeek: string;
-  nextMonth?: string;
 }
 
 export function CalendarPlugin(VDateClass: typeof VDate): void {
@@ -64,11 +62,9 @@ export function CalendarPlugin(VDateClass: typeof VDate): void {
 
     // Format the remaining string - need to use the original format method
     // Get the format method before Calendar plugin modifies it
-    const formatResult = (VDateClass.prototype as any)._format
+    result = (VDateClass.prototype as any)._format
       ? (VDateClass.prototype as any)._format.call(this, result)
       : this.format(result);
-
-    result = formatResult;
 
     // Replace escaped markers back
     for (const [key, value] of Object.entries(escaped)) {

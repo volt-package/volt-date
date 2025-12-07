@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { VDate, volt, extend, RelativeTimePlugin, TimezonePlugin } from '../src/core';
 
 describe('VDate Plugins', () => {
@@ -135,7 +135,7 @@ describe('VDate Plugins', () => {
       // This test verifies that calling extend multiple times with the same plugin
       // doesn't cause issues
       const customPlugin = (VDateClass: typeof VDate) => {
-        VDateClass.prototype.customMethod = function () {
+        (VDateClass.prototype as any).customMethod = function () {
           return 'custom';
         };
       };
@@ -148,13 +148,13 @@ describe('VDate Plugins', () => {
       const vd2 = new VDate();
 
       // Both should have the method
-      expect(typeof vd1.customMethod).toBe('function');
-      expect(typeof vd2.customMethod).toBe('function');
+      expect(typeof (vd1 as any).customMethod).toBe('function');
+      expect(typeof (vd2 as any).customMethod).toBe('function');
     });
 
     it('should allow creating custom plugins', () => {
       const CustomPlugin = (VDateClass: typeof VDate) => {
-        VDateClass.prototype.getDayOfYear = function () {
+        (VDateClass.prototype as any).getDayOfYear = function () {
           const start = this.clone().startOf('year');
           const diff = this.unix() - start.unix();
           return Math.floor(diff / (24 * 60 * 60 * 1000)) + 1;
