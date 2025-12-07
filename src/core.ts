@@ -24,6 +24,12 @@ export class VDate {
   ) {
     if (date instanceof VDate) {
       this.$d = new Date(date.$d.getTime());
+      // Preserve timezone and locale from source VDate if config not provided
+      if (!config) {
+        this.$tz = date.$tz;
+        this.$locale = date.$locale;
+        return; // Skip the rest of initialization
+      }
     } else if (date instanceof Date) {
       this.$d = new Date(date.getTime());
     } else if (Array.isArray(date)) {

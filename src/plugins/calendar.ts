@@ -11,7 +11,7 @@ export interface CalendarFormat {
 
 export function CalendarPlugin(VDateClass: typeof VDate): void {
   (VDateClass.prototype as any).calendar = function (options?: Partial<CalendarFormat>): string {
-    const now = new VDate();
+    const now = new VDateClass();
     const today = now.clone().startOf('day');
     const tomorrow = today.clone().add(1, 'day');
     const yesterday = today.clone().subtract(1, 'day');
@@ -47,28 +47,23 @@ export function CalendarPlugin(VDateClass: typeof VDate): void {
     // Replace [escaped text] markers and format the string
     let result = format;
 
-    // Temporarily replace escaped text with markers (use unique marker)
-    const marker = '__ESCAPED_';
-    const escaped: Record<string, string> = {};
-    let escapeCount = 0;
+    // Extract escaped text (text within brackets) and replace with unique markers
+    const marker = '\uFFF0\uFFF1'; // Use two Unicode private use characters to avoid token collision
+    const escaped: string[] = [];
 
-    // Extract escaped parts
+    // Extract escaped parts like [Today at] -> marker
     result = result.replace(/\[([^\]]+)\]/g, (_match: string, content: string) => {
-      const key = `${marker}${escapeCount}__`;
-      escaped[key] = content;
-      escapeCount++;
-      return key;
+      const index = escaped.length;
+      escaped.push(content);
+      return `${marker}${index}${marker}`;
     });
 
-    // Format the remaining string - need to use the original format method
-    // Get the format method before Calendar plugin modifies it
-    result = (VDateClass.prototype as any)._format
-      ? (VDateClass.prototype as any)._format.call(this, result)
-      : this.format(result);
+    // Now format the remaining tokens
+    result = this.format(result);
 
-    // Replace escaped markers back
-    for (const [key, value] of Object.entries(escaped)) {
-      result = result.replace(key, value);
+    // Replace markers back with escaped text
+    for (let i = 0; i < escaped.length; i++) {
+      result = result.replace(new RegExp(`${marker}${i}${marker}`, 'g'), escaped[i]);
     }
 
     return result;
