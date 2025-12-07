@@ -166,12 +166,7 @@ const sum = d1.add(d2);
 addExample('duration-examples', '1 day + 12 hours', `${sum.asHours()} hours`);
 
 // Min/Max Examples
-const dates = [
-  new VDate('2024-01-15'),
-  new VDate('2024-03-20'),
-  new VDate('2024-01-10'),
-  new VDate('2024-02-28'),
-];
+const dates = [new VDate('2024-01-15'), new VDate('2024-03-20'), new VDate('2024-01-10'), new VDate('2024-02-28')];
 
 const maxDate = (VDate as any).max(dates);
 addExample('minmax-examples', 'Maximum date', maxDate.format('YYYY-MM-DD'));

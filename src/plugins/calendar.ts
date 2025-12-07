@@ -38,9 +38,9 @@ export function CalendarPlugin(VDateClass: typeof VDate): void {
       format = formats.lastDay;
     } else if (targetDay.isSame(tomorrow, 'day')) {
       format = formats.nextDay;
-    } else if (targetDay.isBefore(today) && targetDay.isAfter(today.subtract(7, 'day'))) {
+    } else if (targetDay.isBefore(today) && targetDay.isAfter(today.clone().subtract(7, 'day'))) {
       format = formats.lastWeek;
-    } else if (targetDay.isAfter(today) && targetDay.isBefore(today.add(7, 'day'))) {
+    } else if (targetDay.isAfter(today) && targetDay.isBefore(today.clone().add(7, 'day'))) {
       format = formats.nextWeek;
     }
 
