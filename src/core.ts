@@ -3,17 +3,9 @@ import { addFormatMethod } from './format';
 import { addManipulateMethods } from './manipulate';
 import { addQueryMethods, type QueryUnit } from './query';
 import { addUtilMethods } from './utils';
-import { extend, RelativeTimePlugin, TimezonePlugin } from './plugin';
-import { MinMaxPlugin } from './plugins/minmax';
-import { LocaleDataPlugin } from './plugins/localeData';
-import { CalendarPlugin } from './plugins/calendar';
-import { LocalizedFormatPlugin } from './plugins/localizedFormat';
-import { DurationPlugin, Duration } from './plugins/duration';
-import { CustomParseFormatPlugin } from './plugins/customParseFormat';
+import { extend } from './plugin';
 
-export { extend, RelativeTimePlugin, TimezonePlugin };
-export { MinMaxPlugin, LocaleDataPlugin, CalendarPlugin, LocalizedFormatPlugin, DurationPlugin, Duration };
-export { CustomParseFormatPlugin };
+export { extend };
 export type { QueryUnit };
 
 export interface VDateConfig {
@@ -116,7 +108,7 @@ export interface VDate {
   localeData?(): any;
   calendar?(options?: any): string;
   formatLocalized?(format: string): string;
-  toDuration?(compared?: any): Duration;
+  toDuration?(compared?: any): any;
 
   // Manipulate methods (added by addManipulateMethods)
   add(value: number, unit: string): VDate;
@@ -192,7 +184,3 @@ addQueryMethods(VDate);
 
 // Add utility methods to VDate class
 addUtilMethods(VDate);
-
-// Register built-in plugins
-extend(RelativeTimePlugin);
-extend(TimezonePlugin);

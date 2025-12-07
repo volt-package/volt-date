@@ -1,8 +1,13 @@
-import { describe, it, expect } from 'vitest';
-import { VDate, volt, extend, RelativeTimePlugin, TimezonePlugin } from '../src/core';
+import { describe, it, expect, beforeAll } from 'vitest';
+import { VDate, volt, extend } from '../src/core';
+import { RelativeTimePlugin, TimezonePlugin } from '../src/plugins';
 
 describe('VDate Plugins', () => {
   describe('RelativeTimePlugin', () => {
+    beforeAll(function () {
+      extend(RelativeTimePlugin);
+    });
+
     it('should show relative time in fromNow', () => {
       // Create a date in the past
       const past = new VDate(Date.now() - 60000); // 1 minute ago
@@ -62,6 +67,10 @@ describe('VDate Plugins', () => {
   });
 
   describe('TimezonePlugin', () => {
+    beforeAll(function () {
+      extend(TimezonePlugin);
+    });
+
     it('should change timezone with tz()', () => {
       const vd = new VDate('2024-01-15T12:00:00Z', { tz: 'UTC' });
       const seoulVd = vd.tz('Asia/Seoul');
