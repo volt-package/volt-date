@@ -181,3 +181,39 @@ Recent optimizations reduced bundle size:
 - **Phase 1**: Code simplifications (Duration.asObject, format tokens, regex escaping)
 - **Phase 2**: Plugin architecture refactoring (removed auto-registration of built-in plugins)
 - Result: Core reduced from 21KB → 11KB (minified)
+
+## Example Project
+
+The `example/` folder contains an interactive Vite demo showcasing all volt-date features:
+- Location: `/example`
+- Tech: Vite + TypeScript + vanilla JS
+- Features demonstrated: Core, RelativeTime, Timezones, Calendar, Duration, MinMax, Live Clock
+- Run: `cd example && bun install && bun run dev`
+- Uses local volt-date build via Vite resolve alias (configured in `vite.config.ts`)
+
+## Known Issues & Fixes
+
+### CalendarPlugin Implementation
+
+**Critical**: CalendarPlugin must use `VDateClass` parameter instead of importing `VDate`:
+```typescript
+// WRONG
+const now = new VDate();
+
+// CORRECT
+const now = new VDateClass();
+```
+
+This prevents bundler optimization issues where `new VDate()` becomes `new VDate` (no parentheses), causing Invalid date errors.
+
+**Escaped Text Handling**: Calendar formats like `[Today at]` use double Unicode markers (`\uFFF0\uFFF1`) to avoid collision with format tokens. Single marker `\uFFF0` + index would create `￰0￰`, where `0` conflicts with format parsing.
+
+### VDate Constructor Behavior
+
+When copying VDate instances without config, timezone and locale are preserved:
+```typescript
+const date1 = new VDate('2024-01-15', { tz: 'Asia/Seoul' });
+const date2 = new VDate(date1); // Preserves tz: 'Asia/Seoul'
+```
+
+This is essential for query methods (`isSame`, `isAfter`) that internally create new VDate instances.

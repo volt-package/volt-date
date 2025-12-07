@@ -30,7 +30,12 @@ bun run preview
 
 ## How it Works
 
-The example uses volt-date as a local dependency via `"volt-date": "link:.."` in package.json. This allows testing the library during development.
+The example uses the local volt-date build via `"volt-date": "file:.."` in package.json. This creates a direct file system link to the parent directory.
+
+Before running the example:
+1. Build volt-date: `cd .. && bun run build`
+2. Install example deps: `bun install`
+3. Run dev server: `bun run dev`
 
 All plugins are imported from `volt-date/plugins` and explicitly registered using `extend()`.
 
