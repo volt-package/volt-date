@@ -1,15 +1,15 @@
-import { addGetSetMethods } from './getset';
+import { addGetSetMethods } from './getSet';
 import { addFormatMethod } from './format';
 import { addManipulateMethods } from './manipulate';
 import { addQueryMethods, type QueryUnit } from './query';
 import { addUtilMethods } from './utils';
 import { extend, RelativeTimePlugin, TimezonePlugin } from './plugin';
 import { MinMaxPlugin } from './plugins/minmax';
-import { LocaleDataPlugin } from './plugins/localedata';
+import { LocaleDataPlugin } from './plugins/localeData';
 import { CalendarPlugin } from './plugins/calendar';
-import { LocalizedFormatPlugin } from './plugins/localizedformat';
+import { LocalizedFormatPlugin } from './plugins/localizedFormat';
 import { DurationPlugin, Duration } from './plugins/duration';
-import { CustomParseFormatPlugin } from './plugins/customparseformat';
+import { CustomParseFormatPlugin } from './plugins/customParseFormat';
 
 export { extend, RelativeTimePlugin, TimezonePlugin };
 export { MinMaxPlugin, LocaleDataPlugin, CalendarPlugin, LocalizedFormatPlugin, DurationPlugin, Duration };
